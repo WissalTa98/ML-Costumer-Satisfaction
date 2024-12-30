@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prediction Form</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            padding: 0;
+        }
+        form {
+            display: flex;
+            flex-direction: column;
+            max-width: 500px;
+            margin: auto;
+        }
+        label {
+            margin-top: 10px;
+            font-weight: bold;
+        }
+        input {
+            margin-bottom: 10px;
+            padding: 8px;
+            font-size: 14px;
+        }
+        button {
+            background-color: #007BFF;
+            color: white;
+            padding: 10px;
+            border: none;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .result {
+            margin-top: 20px;
+            font-size: 18px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <h1>Predict Satisfaction</h1>
+    <form id="prediction-form">
+        <!-- Dynamically create input fields for all 22 features -->
+        <label for="feature-0">Gender (1 for Male, 0 for Female):</label>
+        <input type="number" id="feature-0" name="feature-0" required>
+
+        <label for="feature-1">Customer Type (1 for Loyal, 0 for Disloyal):</label>
+        <input type="number" id="feature-1" name="feature-1" required>
+
+        <label for="feature-2">Age:</label>
+        <input type="number" id="feature-2" name="feature-2" required>
+
+        <label for="feature-3">Type of Travel (1 for Business, 0 for Personal):</label>
+        <input type="number" id="feature-3" name="feature-3" required>
+
+        <label for="feature-4">Class (1 for Business, 0 for Economy):</label>
+        <input type="number" id="feature-4" name="feature-4" required>
+
+        <label for="feature-5">Flight Distance:</label>
+        <input type="number" id="feature-5" name="feature-5" required>
+
+        <label for="feature-6">Inflight Wifi Service (1-5):</label>
+        <input type="number" id="feature-6" name="feature-6" required>
+
+        <label for="feature-7">Departure/Arrival Time Convenient (1-5):</label>
+        <input type="number" id="feature-7" name="feature-7" required>
+
+        <label for="feature-8">Ease of Online Booking (1-5):</label>
+        <input type="number" id="feature-8" name="feature-8" required>
+
+        <label for="feature-9">Gate Location (1-5):</label>
+        <input type="number" id="feature-9" name="feature-9" required>
+
+        <label for="feature-10">Food and Drink (1-5):</label>
+        <input type="number" id="feature-10" name="feature-10" required>
+
+        <label for="feature-11">Online Boarding (1-5):</label>
+        <input type="number" id="feature-11" name="feature-11" required>
+
+        <label for="feature-12">Seat Comfort (1-5):</label>
+        <input type="number" id="feature-12" name="feature-12" required>
+
+        <label for="feature-13">Inflight Entertainment (1-5):</label>
+        <input type="number" id="feature-13" name="feature-13" required>
+
+        <label for="feature-14">On-board Service (1-5):</label>
+        <input type="number" id="feature-14" name="feature-14" required>
+
+        <label for="feature-15">Leg Room Service (1-5):</label>
+        <input type="number" id="feature-15" name="feature-15" required>
+
+        <label for="feature-16">Baggage Handling (1-5):</label>
+        <input type="number" id="feature-16" name="feature-16" required>
+
+        <label for="feature-17">Check-in Service (1-5):</label>
+        <input type="number" id="feature-17" name="feature-17" required>
+
+        <label for="feature-18">Inflight Service (1-5):</label>
+        <input type="number" id="feature-18" name="feature-18" required>
+
+        <label for="feature-19">Cleanliness (1-5):</label>
+        <input type="number" id="feature-19" name="feature-19" required>
+
+        <label for="feature-20">Departure Delay in Minutes:</label>
+        <input type="number" id="feature-20" name="feature-20" required>
+
+        <label for="feature-21">Arrival Delay in Minutes:</label>
+        <input type="number" id="feature-21" name="feature-21" required>
+
+        <button type="button" onclick="submitForm()">Predict</button>
+    </form>
+
+    <div class="result" id="result"></div>
+
+    <script>
+        async function submitForm() {
+            const form = document.getElementById("prediction-form");
+            const formData = new FormData(form);
+    
+            // Collect features into an array
+            const features = [];
+            for (let [key, value] of formData.entries()) {
+                features.push(Number(value));
+            }
+    
+            try {
+                // Send the data to the API
+                const response = await fetch("http://127.0.0.1:8000/predict", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({ features })
+                });
+    
+                if (response.ok) {
+                    const result = await response.json();
+                    alert(`Client: ${result.prediction}`);
+                } else {
+                    const error = await response.json();
+                    alert(`Error: ${error.detail}`);
+                }
+            } catch (error) {
+                alert(`Error: Unable to connect to the API. ${error.message}`);
+            }
+        }
+    </script>    
+</body>
+</html>
